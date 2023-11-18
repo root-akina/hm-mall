@@ -24,4 +24,16 @@ public class ItemController {
         log.info("分页参数：{}+{}",page,size);
         return itemService.selectPage(page,size);
     }
+
+    /**
+     * 根据 ID 查询
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Item getItem(@PathVariable("id") Long id){
+        return itemService.getById(id);
+    }
+
+
 }
