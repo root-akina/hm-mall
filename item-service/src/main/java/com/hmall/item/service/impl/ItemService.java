@@ -64,7 +64,8 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
                 .set(item.getStock()!=null,"stock",item.getStock())
                 .set(item.getSpec()!=null,"spec",item.getSpec())
                 .set(item.getImage()!=null,"image",item.getImage())
-                .set(item.getIsAD()!=null,"isAD",item.getIsAD());
+                .set(item.getIsAD()!=null,"isAD",item.getIsAD())
+                .eq("id",item.getId());
         itemMapper.update(item1,updateWrapper);
     }
 
