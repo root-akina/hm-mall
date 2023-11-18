@@ -35,5 +35,9 @@ public class ItemController {
         return itemService.getById(id);
     }
 
-
+    @PostMapping
+    public void addItem(@RequestBody Item item){
+        itemService.save(item);
+        //todo
+    }
 }
