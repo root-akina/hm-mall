@@ -2,6 +2,7 @@ package com.hmall.search.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hmall.search.pojo.Item;
+import com.hmall.search.pojo.PageDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -14,5 +15,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface TbItemMapper extends BaseMapper<Item> {
+
 
 }
