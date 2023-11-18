@@ -1,11 +1,16 @@
 server:
   port: 8089
 spring:
+  application:
+    name: searchservice
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/test02?useSSL=false
+    url: jdbc:mysql://localhost:3306/test02?useSSL=false
     username: root
     password: 1234
     driver-class-name: com.mysql.jdbc.Driver
+  cloud:
+    nacos:
+      server-addr: localhost:8848 # nacos地址
 logging:
   level:
     cn.itcast: debug

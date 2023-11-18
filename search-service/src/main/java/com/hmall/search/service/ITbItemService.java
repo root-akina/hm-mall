@@ -2,7 +2,9 @@ package com.hmall.search.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hmall.search.pojo.EsDTO;
 import com.hmall.search.pojo.Item;
+import com.hmall.search.pojo.PageDTO;
 
 /**
  * <p>
@@ -14,4 +16,5 @@ import com.hmall.search.pojo.Item;
  */
 public interface ITbItemService extends IService<Item> {
 
+    PageDTO<Item> searchEs(EsDTO esDTO);
 }
