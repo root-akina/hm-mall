@@ -10,7 +10,11 @@ import com.hmall.item.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+
+import static java.time.LocalDateTime.now;
 
 @Service
 public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemService {
@@ -30,5 +34,19 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
         List<Item> itemList = pageResult.getRecords();
         long total = pageResult.getTotal();
         return new PageDTO<>(total,itemList);
+    }
+
+    @Override
+    public void updateItemStatusById(Long id, Integer status) {
+        //根据ID获取商品
+        Item item = itemMapper.selectById(id);
+        //更改状态
+        item.setStatus(status);
+        Date date = new Date();
+        item.setUpdateTime(date);
+        //更新商品
+        itemMapper.updateById(item);
+        //todo ....
+
     }
 }

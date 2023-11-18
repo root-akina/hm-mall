@@ -7,4 +7,6 @@ import com.hmall.item.pojo.Item;
 public interface IItemService extends IService<Item> {
 
     PageDTO selectPage(Integer page, Integer size);
+
+    void updateItemStatusById(Long id, Integer status);
 }

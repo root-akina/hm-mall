@@ -20,24 +20,33 @@ public class ItemController {
     private IItemService itemService;
 
     @GetMapping("/list")
-    public PageDTO pageQuery(@RequestParam("page") Integer page,@RequestParam("size") Integer size){
-        log.info("分页参数：{}+{}",page,size);
-        return itemService.selectPage(page,size);
+    public PageDTO pageQuery(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        log.info("分页参数：{}+{}", page, size);
+        return itemService.selectPage(page, size);
     }
 
     /**
      * 根据 ID 查询
+     *
      * @param id
      * @return
      */
     @GetMapping("/{id}")
-    public Item getItem(@PathVariable("id") Long id){
+    public Item getItem(@PathVariable("id") Long id) {
+        log.info("根据ID查询：id{}", id);
         return itemService.getById(id);
     }
 
     @PostMapping
-    public void addItem(@RequestBody Item item){
+    public void addItem(@RequestBody Item item) {
+        log.info("新增商品：{}", item);
         itemService.save(item);
-        //todo
+        //todo id 创建时间更新时间
+    }
+
+    @PutMapping("/status/{id}/{status}")
+    public void itemStatus(@PathVariable("id") Long id, @PathVariable("status") Integer status) {
+        log.info("更新商品状态：{},{}", id, status == 1 ? "上架商品" : "下架商品");
+        itemService.updateItemStatusById(id,status);
     }
 }
