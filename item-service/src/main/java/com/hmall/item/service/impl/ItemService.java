@@ -24,6 +24,12 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
     private ItemMapper itemMapper;
 
 
+    /**
+     * 分页查询
+     * @param pages
+     * @param size
+     * @return
+     */
     @Override
     public PageDTO selectPage(Integer pages, Integer size) {
         Page<Item> page = new Page<>(pages, size);
@@ -37,6 +43,11 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
         return new PageDTO<>(total, itemList);
     }
 
+    /**
+     * 更新商品状态
+     * @param id
+     * @param status
+     */
     @Override
     public void updateItemStatusById(Long id, Integer status) {
         //根据ID获取商品
@@ -45,12 +56,17 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
         item.setStatus(status);
         Date date = new Date();
         item.setUpdateTime(date);
+        item.setUpdateTime(new Date());
         //更新商品
         itemMapper.updateById(item);
-        //todo ....
+
 
     }
 
+    /**
+     * 更新商品信息
+     * @param item
+     */
     @Override
     public void updateItem(Item item) {
         Long id = item.getId();
@@ -65,10 +81,15 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
                 .set(item.getSpec()!=null,"spec",item.getSpec())
                 .set(item.getImage()!=null,"image",item.getImage())
                 .set(item.getIsAD()!=null,"isAD",item.getIsAD())
+                .set("updateTime",new Date())
                 .eq("id",item.getId());
         itemMapper.update(item1,updateWrapper);
     }
 
+    /**
+     * 删除商品
+     * @param id
+     */
     @Override
     public void deleteItemById(Long id) {
         //查询商品状态，1，2 上架不能删除

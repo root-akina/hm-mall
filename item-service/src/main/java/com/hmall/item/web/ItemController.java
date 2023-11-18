@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -41,8 +42,10 @@ public class ItemController {
     @PostMapping
     public void addItem(@RequestBody Item item) {
         log.info("新增商品：{}", item);
+        item.setUpdateTime(new Date());
+        item.setCreateTime(new Date());
         itemService.save(item);
-        //todo id 创建时间更新时间
+        //todo id 创建时间更新时间 使用AOP
     }
 
     @PutMapping("/status/{id}/{status}")
