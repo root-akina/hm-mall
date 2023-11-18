@@ -1,6 +1,10 @@
 package com.hmall.search;
 
+import com.alibaba.fastjson.JSON;
 import com.hmall.search.constans.HmallTableIndex;
+import com.hmall.search.pojo.Item;
+import com.hmall.search.service.ITbItemService;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -31,6 +35,24 @@ public class esTest {
         // 3.发送请求
         client.indices().create(request, RequestOptions.DEFAULT);
 
+    }
+
+    @Autowired
+    private ITbItemService service;
+    /**
+     * 新增到库
+     */
+    @Test
+    public void addOne() throws IOException {
+        Item item = service.getById(100002672304L);
+
+        String jsonString = JSON.toJSONString(item);
+
+        IndexRequest hmall = new IndexRequest("hmall").id(item.getId().toString());
+
+        hmall.source(jsonString,XContentType.JSON);
+
+        client.index(hmall,RequestOptions.DEFAULT);
     }
 }
 
