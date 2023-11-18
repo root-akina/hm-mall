@@ -9,4 +9,6 @@ public interface IItemService extends IService<Item> {
     PageDTO selectPage(Integer page, Integer size);
 
     void updateItemStatusById(Long id, Integer status);
+
+    void updateItem(Item item);
 }

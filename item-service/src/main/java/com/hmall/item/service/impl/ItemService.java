@@ -1,6 +1,7 @@
 package com.hmall.item.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hmall.common.dto.PageDTO;
@@ -33,7 +34,7 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
         Page<Item> pageResult = itemMapper.selectPage(page, queryWrapper);
         List<Item> itemList = pageResult.getRecords();
         long total = pageResult.getTotal();
-        return new PageDTO<>(total,itemList);
+        return new PageDTO<>(total, itemList);
     }
 
     @Override
@@ -48,5 +49,22 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
         itemMapper.updateById(item);
         //todo ....
 
+    }
+
+    @Override
+    public void updateItem(Item item) {
+        Long id = item.getId();
+        Item item1 = itemMapper.selectById(id);
+
+        UpdateWrapper<Item> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set(item.getName()!=null,"name",item.getName())
+                .set(item.getCategory()!=null,"category",item.getCategory())
+                .set(item.getBrand()!= null,"brand",item.getBrand())
+                .set(item.getPrice()!=null,"price",item.getPrice())
+                .set(item.getStock()!=null,"stock",item.getStock())
+                .set(item.getSpec()!=null,"spec",item.getSpec())
+                .set(item.getImage()!=null,"image",item.getImage())
+                .set(item.getIsAD()!=null,"isAD",item.getIsAD());
+        itemMapper.update(item1,updateWrapper);
     }
 }

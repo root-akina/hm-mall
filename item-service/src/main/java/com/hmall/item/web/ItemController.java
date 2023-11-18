@@ -49,4 +49,11 @@ public class ItemController {
         log.info("更新商品状态：{},{}", id, status == 1 ? "上架商品" : "下架商品");
         itemService.updateItemStatusById(id,status);
     }
+
+
+    @PutMapping
+    public void updateItem(@RequestBody Item item){
+        log.info("更新商品：{}",item);
+        itemService.updateItem(item);
+    }
 }
