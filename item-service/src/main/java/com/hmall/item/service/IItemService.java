@@ -11,4 +11,6 @@ public interface IItemService extends IService<Item> {
     void updateItemStatusById(Long id, Integer status);
 
     void updateItem(Item item);
+
+    void deleteItemById(Long id);
 }

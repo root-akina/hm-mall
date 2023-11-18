@@ -6,6 +6,7 @@ import com.hmall.common.dto.PageDTO;
 import com.hmall.item.pojo.Item;
 import com.hmall.item.service.IItemService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,5 +56,11 @@ public class ItemController {
     public void updateItem(@RequestBody Item item){
         log.info("更新商品：{}",item);
         itemService.updateItem(item);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteItemById(@PathVariable Long id){
+        log.info("根据ID删除商品：{}",id);
+        itemService.deleteItemById(id);
     }
 }

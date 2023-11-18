@@ -67,4 +67,15 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
                 .set(item.getIsAD()!=null,"isAD",item.getIsAD());
         itemMapper.update(item1,updateWrapper);
     }
+
+    @Override
+    public void deleteItemById(Long id) {
+        //查询商品状态，1，2 上架不能删除
+        Item item = itemMapper.selectById(id);
+        if (item.getStatus()==1){
+            throw new RuntimeException("上架商品不能删除");
+        }else {
+            itemMapper.deleteById(id);
+        }
+    }
 }
