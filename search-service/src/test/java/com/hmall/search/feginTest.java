@@ -18,5 +18,6 @@ public class feginTest {
         PageDTO pageDTO = itemClient.pageQuery(100, 100);
         System.out.println(pageDTO.getTotal());
         System.out.println(pageDTO.getList().toString());
+
     }
 }
