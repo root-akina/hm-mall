@@ -22,7 +22,7 @@ public class ItemController {
     private IItemService itemService;
 
     @GetMapping("/list")
-    public PageDTO pageQuery(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+    public PageDTO<Item> pageQuery(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
         log.info("分页参数：{}+{}", page, size);
         return itemService.selectPage(page, size);
     }

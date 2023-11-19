@@ -31,7 +31,7 @@ public class ItemService extends ServiceImpl<ItemMapper, Item> implements IItemS
      * @return
      */
     @Override
-    public PageDTO selectPage(Integer pages, Integer size) {
+    public PageDTO<Item> selectPage(Integer pages, Integer size) {
         Page<Item> page = new Page<>(pages, size);
 //2.构建条件对象
         LambdaQueryWrapper<Item> queryWrapper = new LambdaQueryWrapper<>();

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hmall.search.constans.HmallTableIndex;
+import com.hmall.search.feign.ItemClient;
 import com.hmall.search.mapper.TbItemMapper;
 import com.hmall.search.pojo.Item;
 import com.hmall.search.pojo.PageDTO;
@@ -21,6 +22,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -116,20 +118,26 @@ public class esTest {
             BulkRequest bulkRequest = new BulkRequest();
             for (Item record : pageResult.getRecords()) {
                 if (record.getStatus() == 1) {
-                    bulkRequest.add(
+                    IndexRequest indexRequest = new IndexRequest("hmall")
+                            .id(record.getId().toString())
+                            .source(JSON.toJSONString(record), XContentType.JSON);
+                    bulkRequest.add(indexRequest);
+                    System.out.println("Added request: " + indexRequest.toString());
+                    /*bulkRequest.add(
                             new IndexRequest("hmall")
                                     .id(record.getId().toString())
-                                    .source(JSON.toJSONString(record), XContentType.JSON));
+                                    .source(JSON.toJSONString(record), XContentType.JSON));*/
                 }
             }
-            client.bulk(bulkRequest, RequestOptions.DEFAULT);
+            if (bulkRequest.numberOfActions()>0){
+                client.bulk(bulkRequest, RequestOptions.DEFAULT);
+            }else {
+                log.info("搜不到数据了{}",bulkRequest.getDescription());
+                return;
+            }
             log.info("第{}页，本页总条数：， 导入完毕", i);
             i++;
-            if (page - (page % 1000) >= total - (total % 1000)) {
-                flag = false;
-            }
         }
-
     }
 
     @Test
