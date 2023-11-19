@@ -8,15 +8,15 @@ spring:
     username: root
     password: 1234
     driver-class-name: com.mysql.jdbc.Driver
-    logging:
-      level:
-        com:
-          baomidou:
-            mybatisplus:
-              mapper=DEBUG:
   cloud:
     nacos:
       server-addr: localhost:8848 # nacos地址
+  rabbitmq:
+    virtual-host: /
+    username: itcast
+    password: 123456
+    host: 192.168.150.102
+    port: 5672
 logging:
   level:
     cn.itcast: debug

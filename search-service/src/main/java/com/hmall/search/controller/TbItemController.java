@@ -35,4 +35,10 @@ public class TbItemController {
     public PageDTO<Item> searchES(@RequestBody EsDTO esDTO){
         return esService.searchEs(esDTO);
     }
+
+    /**
+     * RabbitMQ远程调用
+     */
+
+
 }
