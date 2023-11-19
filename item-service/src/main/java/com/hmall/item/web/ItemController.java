@@ -52,6 +52,7 @@ public class ItemController {
     public void itemStatus(@PathVariable("id") Long id, @PathVariable("status") Integer status) {
         log.info("更新商品状态：{},{}", id, status == 1 ? "上架商品" : "下架商品");
         itemService.updateItemStatusById(id,status);
+
     }
 
 
