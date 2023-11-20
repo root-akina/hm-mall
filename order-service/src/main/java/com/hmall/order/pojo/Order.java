@@ -12,8 +12,9 @@ import java.util.Date;
 public class Order{
     /**
      * 订单编号
+     * 雪花算法 ：ASSIGN_ID
      */
-    @TableId(type = IdType.INPUT)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
     /**
      * 商品金额
