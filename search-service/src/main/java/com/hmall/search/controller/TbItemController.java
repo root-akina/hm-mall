@@ -66,12 +66,13 @@ public class TbItemController {
     @RabbitListener(queues = "item.status")
     public void itemConsumer(Map<String, Object> msg) throws IOException {
         Integer status = (Integer) msg.get("status");
-        Integer id = (Integer) msg.get("id");
+        Long id = (Long) msg.get("id");
 
+        log.info("商品状态：{}，id：{}",status,id);
         if (status == 1) {
             //上架操作，根据id新增
             IndexRequest hmall = new IndexRequest("hmall").id(String.valueOf(id));
-            com.hmall.common.dto.Item item = itemClient.getItem(Long.valueOf(id));
+            com.hmall.common.dto.Item item = itemClient.getItem(id);
             String jsonString = JSON.toJSONString(item);
             hmall.source(jsonString, XContentType.JSON);
             Long currentId = BaseContext.getCurrentId();
