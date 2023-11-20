@@ -2,8 +2,10 @@ package com.hmall.search.controller;
 
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import com.hmall.common.context.BaseContext;
+import com.hmall.common.fegin.FeignItemClient;
+
 import com.hmall.search.feign.ItemClient;
 import com.hmall.search.pojo.EsDTO;
 import com.hmall.search.pojo.Item;
@@ -43,6 +45,7 @@ public class TbItemController {
     private ITbItemService esService;
     @Autowired
     private ItemClient itemClient;
+//    private FeignItemClient itemClient;
 
     @Autowired
     private RestHighLevelClient client;
@@ -70,6 +73,12 @@ public class TbItemController {
             Item item = itemClient.getItem(Long.valueOf(id));
             String jsonString = JSON.toJSONString(item);
             hmall.source(jsonString, XContentType.JSON);
+            Long currentId = BaseContext.getCurrentId();
+            if (currentId != null) {
+                log.info("search id {}",id);
+            }else {
+                log.error("search controller-itemConsumer-ID null");
+            }
             client.index(hmall, RequestOptions.DEFAULT);
         } else {
             //下架操作，根据ID删除
@@ -78,7 +87,7 @@ public class TbItemController {
             if (currentId != null) {
                 log.info("search id {}",id);
             }else {
-                log.error("null");
+                log.error("search controller-itemConsumer-ID null");
             }
             client.delete(hmall, RequestOptions.DEFAULT);
         }

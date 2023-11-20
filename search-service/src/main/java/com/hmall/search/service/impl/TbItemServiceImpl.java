@@ -78,7 +78,13 @@ public class TbItemServiceImpl extends ServiceImpl<TbItemMapper, Item> implement
         //排序soryby
         String sortBy = esDTO.getSortBy();
         if (!StringUtils.isEmpty(sortBy)) {
-            request.source().sort("price", SortOrder.DESC);
+            if (esDTO.getSortBy().equals("sold")) {
+                request.source().sort("sold", SortOrder.DESC);
+            } else if (esDTO.getSortBy().equals("price")) {
+                request.source().sort("price", SortOrder.DESC);
+            }else if (esDTO.getSortBy().equals("default")){
+                request.source().sort("id",SortOrder.ASC);
+            }
         }
 
         try {
@@ -104,7 +110,7 @@ public class TbItemServiceImpl extends ServiceImpl<TbItemMapper, Item> implement
             itemList.add(item);
         }
 
-        return new PageDTO<Item>(totalHits,itemList);
+        return new PageDTO<Item>(totalHits, itemList);
     }
 
 
