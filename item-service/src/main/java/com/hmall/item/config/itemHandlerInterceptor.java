@@ -21,9 +21,16 @@ public class itemHandlerInterceptor implements HandlerInterceptor {
         // 解析 authorization 信息，获取 userId
 
         // 将 userId 存储到 ThreadLocal 中
-        Long id = Long.valueOf(authorizationHeader);
-        BaseContext.setCurrentId(id);
-        log.info("Item服务—用户id：{}",id);
+
+        if (authorizationHeader != null){
+            Long id = Long.valueOf(authorizationHeader);
+            BaseContext.setCurrentId(id);
+            log.info("Item服务—用户id：{}",id);
+        }else {
+            log.error("没有请求头");
+        }
+
+
         // 返回 true 表示继续执行后续的拦截器和处理器
         return true;
     }
