@@ -82,6 +82,10 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements IOr
         order.setCreateTime(new Date());
         //- 6）将Order写入数据库tb_order表中
         int insert = orderMapper.insert(order);
+
+        //12）调用itemClient 减去库存
+        itemClient.stockUpdate(itemOrder.getId(),orderDTO.getNum());
+        //13）发送消息
         return order;
     }
 
@@ -109,6 +113,11 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements IOr
         detailMapper.insert(orderDetail);
     }
 
+    /**
+     * 订单发货
+     * @param id 订单Id
+     * @param orderDTO 地址表id
+     */
     @Override
     public void confirmAddress(Long id, OrderDTO orderDTO) {
         OrderLogistics orderLogistics = new OrderLogistics();

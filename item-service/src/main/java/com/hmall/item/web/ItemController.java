@@ -1,6 +1,8 @@
 package com.hmall.item.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hmall.common.dto.PageDTO;
 import com.hmall.item.pojo.Item;
@@ -70,6 +72,13 @@ public class ItemController {
 
     @PutMapping("/stock/{itemId}/{num}")
     public void stockUpdate(@PathVariable("itemId") Long itemId,@PathVariable("num") Integer num){
-
+        log.info("item更新库存服务：id：{},num:{}",itemId,num);
+        Item byId = itemService.getById(itemId);
+        UpdateWrapper<Item> itemUpdateWrapper = new UpdateWrapper<>();
+        Integer stock = byId.getStock() - num;
+        itemUpdateWrapper.set("stock",stock);
+        itemUpdateWrapper.eq("id",itemId);
+        boolean update = itemService.update(itemUpdateWrapper);
+        //修改ES文档
     }
 }
