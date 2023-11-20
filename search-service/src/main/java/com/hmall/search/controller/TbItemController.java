@@ -3,6 +3,7 @@ package com.hmall.search.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hmall.common.context.BaseContext;
 import com.hmall.search.feign.ItemClient;
 import com.hmall.search.pojo.EsDTO;
 import com.hmall.search.pojo.Item;
@@ -50,7 +51,7 @@ public class TbItemController {
      * ES搜索
      */
     @PostMapping("/list")
-    public PageDTO<Item> searchES(@RequestBody EsDTO esDTO){
+    public PageDTO<Item> searchES(@RequestBody EsDTO esDTO) {
         return esService.searchEs(esDTO);
     }
 
@@ -63,17 +64,23 @@ public class TbItemController {
         Integer status = (Integer) msg.get("status");
         Integer id = (Integer) msg.get("id");
 
-        if (status==1){
+        if (status == 1) {
             //上架操作，根据id新增
             IndexRequest hmall = new IndexRequest("hmall").id(String.valueOf(id));
             Item item = itemClient.getItem(Long.valueOf(id));
             String jsonString = JSON.toJSONString(item);
             hmall.source(jsonString, XContentType.JSON);
             client.index(hmall, RequestOptions.DEFAULT);
-        }else {
+        } else {
             //下架操作，根据ID删除
             DeleteRequest hmall = new DeleteRequest("hmall").id(String.valueOf(id));
-            client.delete(hmall,RequestOptions.DEFAULT);
+            Long currentId = BaseContext.getCurrentId();
+            if (currentId != null) {
+                log.info("search id {}",id);
+            }else {
+                log.error("null");
+            }
+            client.delete(hmall, RequestOptions.DEFAULT);
         }
 
     }

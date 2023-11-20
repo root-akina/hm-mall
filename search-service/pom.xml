@@ -90,18 +90,8 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.hmall</groupId>
-            <artifactId>feign-api</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.hmall</groupId>
-            <artifactId>feign-api</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
+
+
     </dependencies>
 
 </project>
