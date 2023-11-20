@@ -17,6 +17,7 @@ public class UserHandlerInterceptor implements HandlerInterceptor {
 
         // 获取请求头中的 authorization 信息
         String authorizationHeader = request.getHeader("authorization");
+        String feignHeader = request.getHeader("feignHeader");
 
         // 解析 authorization 信息，获取 userId
 
@@ -25,7 +26,11 @@ public class UserHandlerInterceptor implements HandlerInterceptor {
         if (authorizationHeader != null){
             Long id = Long.valueOf(authorizationHeader);
             BaseContext.setCurrentId(id);
-            log.info("User服务—用户id：{}",id);
+            log.info("Search服务—用户id：{}",id);
+        }else if (feignHeader != null){
+            Long id = Long.valueOf(feignHeader);
+            BaseContext.setCurrentId(id);
+            log.info("feign调用 id:{}",feignHeader);
         }else {
             log.error("没有请求头");
         }
