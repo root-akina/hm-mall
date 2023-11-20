@@ -14,6 +14,7 @@ import com.hmall.search.service.ITbItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -94,6 +95,18 @@ public class TbItemController {
             client.delete(hmall, RequestOptions.DEFAULT);
         }
 
+    }
+
+    //更新文档
+    @RabbitListener(queues = "update.queue")
+    public void updateEs(Map<String,Object> msg) throws IOException {
+        Long itemId = (Long) msg.get("itemId");
+        Integer stock = (Integer) msg.get("stock");
+        if (itemId != null && stock != null){
+            UpdateRequest stockRequest = new UpdateRequest("hmall", String.valueOf(itemId));
+            stockRequest.doc("stock",stock);
+            client.update(stockRequest,RequestOptions.DEFAULT);
+        }
     }
 
 
