@@ -67,4 +67,9 @@ public class ItemController {
         log.info("根据ID删除商品：{}",id);
         itemService.deleteItemById(id);
     }
+
+    @PutMapping("/stock/{itemId}/{num}")
+    public void stockUpdate(@PathVariable("itemId") Long itemId,@PathVariable("num") Integer num){
+
+    }
 }

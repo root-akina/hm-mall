@@ -6,12 +6,15 @@ import com.hmall.common.dto.Item;
 import com.hmall.common.fegin.FeignAddressClient;
 import com.hmall.common.fegin.FeignItemClient;
 import com.hmall.order.mapper.OrderDetailMapper;
+import com.hmall.order.mapper.OrderLogisticsMapper;
 import com.hmall.order.mapper.OrderMapper;
 import com.hmall.order.pojo.Order;
 import com.hmall.order.pojo.OrderDTO;
 import com.hmall.order.pojo.OrderDetail;
+import com.hmall.order.pojo.OrderLogistics;
 import com.hmall.order.service.IOrderService;
 import org.aspectj.weaver.ast.Or;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,8 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements IOr
     private OrderMapper orderMapper;
     @Autowired
     private OrderDetailMapper detailMapper;
+    @Autowired
+    private OrderLogisticsMapper logisticsMapper;
 
     /**
      *  订单
@@ -65,9 +70,9 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements IOr
         LocalDateTime newDateTime = localDateTime.plusSeconds(300);
         Date newDate = Date.from(newDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
-        order.setEndTime(newDate);
+        /*order.setEndTime(newDate);
         order.setPayTime(newDate);
-        order.setCloseTime(newDate);
+        order.setCloseTime(newDate);*/
 
 
         //根据地址id找用户
@@ -93,11 +98,33 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements IOr
         orderDetail.setNum(orderDTO.getNum());
 
         Item item = itemClient.getItem(orderDTO.getItemId());
-        orderDetail.setImage(item.getImage());
+        BeanUtils.copyProperties(item,orderDetail);
+        /*orderDetail.setImage(item.getImage());
         orderDetail.setSpec(item.getSpec());
         orderDetail.setPrice(item.getPrice());
-        orderDetail.setTitle(item.getName());
+        */
         orderDetail.setItemId(item.getId());
+        orderDetail.setTitle(item.getName());
         orderDetail.setUpdateTime(new Date());
+        detailMapper.insert(orderDetail);
+    }
+
+    @Override
+    public void confirmAddress(Long id, OrderDTO orderDTO) {
+        OrderLogistics orderLogistics = new OrderLogistics();
+
+        orderLogistics.setOrderId(id);
+
+        Address addressById = addressClient.findAddressById(orderDTO.getAddressId());
+        BeanUtils.copyProperties(addressById,orderLogistics);
+        orderLogistics.setPhone(addressById.getMobile());
+        /*orderLogistics.setContact(addressById.getContact());
+        orderLogistics.setCity(addressById.getCity());
+        orderLogistics.setTown(addressById.getTown());
+        orderLogistics.setStreet(addressById.getStreet());
+        orderLogistics.setProvince(addressById.getProvince());*/
+        orderLogistics.setCreateTime(new Date());
+        orderLogistics.setUpdateTime(new Date());
+        logisticsMapper.insert(orderLogistics);
     }
 }

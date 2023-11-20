@@ -20,4 +20,11 @@ public interface IOrderService extends IService<Order> {
      * @param orderDTO 前端
      */
     void confirmOrderDetail(Order order, OrderDTO orderDTO);
+
+    /**
+     * 订单地址
+     * @param id 订单Id
+     * @param orderDTO 地址表id
+     */
+    void confirmAddress(Long id, OrderDTO orderDTO);
 }
