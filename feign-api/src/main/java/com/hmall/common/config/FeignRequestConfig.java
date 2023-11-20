@@ -1,13 +1,15 @@
-package com.hmall.item.config;
+package com.hmall.common.config;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.context.annotation.Configuration;
 
-//@Configuration
-public class FeignConfig implements RequestInterceptor {
+@Configuration
+public class FeignRequestConfig implements RequestInterceptor {
+
     @Override
     public void apply(RequestTemplate template) {
-        template.header("feignHeader","7");
+        template.header("feignHeader","78");
     }
 }
+

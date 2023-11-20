@@ -1,5 +1,6 @@
 package com.hmall.search.config;
 
+import com.hmall.common.config.FeignRequestConfig;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -14,4 +15,5 @@ public class EsConfig {
                 HttpHost.create("http://192.168.150.102:9200")
         ));
     }
+
 }

@@ -43,9 +43,10 @@ public class TbItemController {
 
     @Autowired
     private ITbItemService esService;
+//    @Autowired
+//    private ItemClient itemClient;
     @Autowired
-    private ItemClient itemClient;
-//    private FeignItemClient itemClient;
+    private FeignItemClient itemClient;
 
     @Autowired
     private RestHighLevelClient client;
@@ -70,7 +71,7 @@ public class TbItemController {
         if (status == 1) {
             //上架操作，根据id新增
             IndexRequest hmall = new IndexRequest("hmall").id(String.valueOf(id));
-            Item item = itemClient.getItem(Long.valueOf(id));
+            com.hmall.common.dto.Item item = itemClient.getItem(Long.valueOf(id));
             String jsonString = JSON.toJSONString(item);
             hmall.source(jsonString, XContentType.JSON);
             Long currentId = BaseContext.getCurrentId();

@@ -110,7 +110,7 @@ public class TbItemServiceImpl extends ServiceImpl<TbItemMapper, Item> implement
             itemList.add(item);
         }
 
-        return new PageDTO<Item>(totalHits, itemList);
+        return new PageDTO<Item>(totalHits,itemList);
     }
 
 
