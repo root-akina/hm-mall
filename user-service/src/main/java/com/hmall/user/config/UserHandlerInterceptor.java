@@ -26,11 +26,11 @@ public class UserHandlerInterceptor implements HandlerInterceptor {
         if (authorizationHeader != null){
             Long id = Long.valueOf(authorizationHeader);
             BaseContext.setCurrentId(id);
-            log.info("Search服务—用户id：{}",id);
+            log.info("User服务—用户id：{}",id);
         }else if (feignHeader != null){
             Long id = Long.valueOf(feignHeader);
             BaseContext.setCurrentId(id);
-            log.info("feign调用 id:{}",feignHeader);
+            log.info("User调用 id:{}",feignHeader);
         }else {
             log.error("没有请求头");
         }

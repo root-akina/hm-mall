@@ -15,6 +15,7 @@ public class OrderHandlerInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 获取请求头中的 authorization 信息
         String authorizationHeader = request.getHeader("authorization");
+        String feignHeader = request.getHeader("feignHeader");
 
         // 解析 authorization 信息，获取 userId
 
@@ -24,9 +25,16 @@ public class OrderHandlerInterceptor implements HandlerInterceptor {
             Long id = Long.valueOf(authorizationHeader);
             BaseContext.setCurrentId(id);
             log.info("Order服务—用户id：{}",id);
-        }else {
+        }else if (feignHeader!= null){
+            Long feginId = Long.valueOf(feignHeader);
+            BaseContext.setCurrentId(feginId);
+            log.info("Order服务-feign调用—用户id：{}",feginId);
+        }
+        else {
             log.error("没有请求头");
         }
+
+
         // 返回 true 表示继续执行后续的拦截器和处理器
         return true;
     }
