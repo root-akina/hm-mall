@@ -13,4 +13,11 @@ public interface IOrderService extends IService<Order> {
      * @return Long 订单Id
      */
     Order confirmOrder(OrderDTO orderDTO);
+
+    /**
+     * 订单细节
+     * @param order 订单详情
+     * @param orderDTO 前端
+     */
+    void confirmOrderDetail(Order order, OrderDTO orderDTO);
 }
