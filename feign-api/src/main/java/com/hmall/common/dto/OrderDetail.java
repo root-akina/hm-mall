@@ -1,4 +1,4 @@
-package com.hmall.order.pojo;
+package com.hmall.common.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -19,7 +19,6 @@ public class OrderDetail {
     /**
      * 订单编号
      */
-    @TableField("order_id")
     private Long orderId;
     /**
      * 商品id
