@@ -1,6 +1,8 @@
 package com.hmall.search;
 
+import com.hmall.common.fegin.FeignAddressClient;
 import com.hmall.common.fegin.FeignItemClient;
+import com.hmall.common.fegin.FeignOrderClient;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 
 
 
-@EnableFeignClients(clients = {FeignItemClient.class})
+@EnableFeignClients(clients = {FeignItemClient.class, FeignOrderClient.class, FeignAddressClient.class})
 @SpringBootApplication
 public class SearchApplication {
     public static void main(String[] args) {
