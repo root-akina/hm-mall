@@ -74,7 +74,7 @@ public class TbItemController {
     @RabbitListener(queues = "item.status")
     public void itemConsumer(Map<String, Object> msg) throws IOException {
         Integer status = (Integer) msg.get("status");
-        Long id = (Long) msg.get("id");
+        Long id = Long.valueOf(msg.get("id").toString());
 
         log.info("商品状态：{}，id：{}", status, id);
         if (status == 1) {
