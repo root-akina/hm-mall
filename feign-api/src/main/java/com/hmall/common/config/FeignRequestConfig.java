@@ -9,7 +9,7 @@ public class FeignRequestConfig implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        template.header("feignHeader","78");
+        template.header("authorization","78");
     }
 }
 

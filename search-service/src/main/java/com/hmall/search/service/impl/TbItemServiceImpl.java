@@ -2,6 +2,7 @@ package com.hmall.search.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.hmall.search.mapper.TbItemMapper;
 import com.hmall.search.pojo.EsDTO;
 import com.hmall.search.pojo.Item;
@@ -13,10 +14,15 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +31,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -83,12 +90,24 @@ public class TbItemServiceImpl extends ServiceImpl<TbItemMapper, Item> implement
             } else if (esDTO.getSortBy().equals("price")) {
                 request.source().sort("price", SortOrder.DESC);
             }else if (esDTO.getSortBy().equals("default")){
-                request.source().sort("id",SortOrder.ASC);
+                request.source().sort("_score",SortOrder.DESC);
             }
         }
 
+
         try {
-            request.source().query(searchKey);
+            //2.算分
+            FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(
+                    searchKey, // 原始查询，相关性算分的查询
+                    new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{  // function score的数组
+                            new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                                    QueryBuilders.termQuery("isAD",true),  // 过滤条件
+                                    ScoreFunctionBuilders.weightFactorFunction(10) // 算分函数
+                            )
+                    }).scoreMode(FunctionScoreQuery.ScoreMode.MULTIPLY);
+
+            request.source().query(functionScoreQueryBuilder);
+            request.source().highlighter(new HighlightBuilder().field("name").requireFieldMatch(false));
             SearchResponse search = client.search(request, RequestOptions.DEFAULT);
             return requestHandler(search);
         } catch (IOException e) {
@@ -107,6 +126,17 @@ public class TbItemServiceImpl extends ServiceImpl<TbItemMapper, Item> implement
 
             String sourceAsString = hit.getSourceAsString();
             Item item = JSON.parseObject(sourceAsString, Item.class);
+            //4.4 处理高亮
+            //获得高亮数组
+            Map<String, HighlightField> highlightMap = hit.getHighlightFields();
+            if (!CollectionUtils.isEmpty(highlightMap)) {
+                //获得高亮字段
+                HighlightField highlightField = highlightMap.get("name");
+                if (highlightField != null) {
+                    String name = highlightField.getFragments()[0].string();
+                    item.setName(name);
+                }
+            }
             itemList.add(item);
         }
 

@@ -12,6 +12,9 @@ import com.hmall.order.service.IOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,19 +58,26 @@ public class OrderController {
         String orderId = String.valueOf(order.getId());
         System.out.println(orderId);
         //发送订单信息，延迟30min
-
-        Message ttp = MessageBuilder.withBody(orderId.getBytes(StandardCharsets.UTF_8)).setExpiration("30000").build();
-        rabbitTemplate.convertAndSend("payment.queue", ttp);
+        //1.交换机,key,消息
+        String exchange = "ttl.direct";
+        String key = "ttl";
+        Message ttp = MessageBuilder.withBody(orderId.getBytes(StandardCharsets.UTF_8)).setExpiration("300000").build();
+        rabbitTemplate.convertAndSend(exchange, key, ttp);
         return orderId;
     }
 
     //超时订单
-    @RabbitListener(queues = "payment.queue")
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(name = "dl.queue"),
+            exchange = @Exchange(name = "dl.direct"),
+            key = "dl"
+    ))
     public void timeoutPayment(String msg) {
         if (StringUtils.isEmpty(msg)) {
             log.error("空的RabbitMQ信息");
             return;
         }
+        log.error("死信：{}",msg);
 
         Order order = orderService.getById(msg);
         if (order != null && order.getStatus() == 1) {

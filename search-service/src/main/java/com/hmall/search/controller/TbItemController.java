@@ -4,11 +4,9 @@ package com.hmall.search.controller;
 import com.alibaba.fastjson.JSON;
 
 import com.hmall.common.context.BaseContext;
-import com.hmall.common.fegin.FeignAddressClient;
 import com.hmall.common.fegin.FeignItemClient;
 
 import com.hmall.common.fegin.FeignOrderClient;
-import com.hmall.search.feign.ItemClient;
 import com.hmall.search.pojo.EsDTO;
 import com.hmall.search.pojo.Item;
 import com.hmall.search.pojo.PageDTO;
@@ -22,7 +20,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -107,7 +104,7 @@ public class TbItemController {
     //更新文档
     @RabbitListener(queues = "update.queue")
     public void updateEs(Map<String, Object> msg) throws IOException {
-        Long itemId = (Long) msg.get("itemId");
+        Long itemId= Long.valueOf(msg.get("itemId").toString());
         Integer stock = (Integer) msg.get("stock");
         if (itemId != null && stock != null) {
             UpdateRequest stockRequest = new UpdateRequest("hmall", String.valueOf(itemId));
